@@ -34,7 +34,30 @@ Allowed payment methods are `UPI`, `CARD`, and `COD`. Server prices are resolved
 UPI requires an identifier such as `customer@upi`, CARD requires a four-digit demo reference, and COD does not require a payment reference. Method-specific references are validated by the request contract before the order service executes.
 UPI and CARD are recorded as `PAID`; COD remains `PENDING` until collection. Delivery name, phone, and address are persisted on the order and returned with order history.
 
-## 3. Backend class responsibilities
+## 3. MVC, DAO, repository, and service boundaries
+
+The backend follows MVC:
+
+- **View:** React/TypeScript pages render basket, checkout, payment, order history, tracking, and delivery address.
+- **Controller:** REST controllers validate request DTOs, receive the authenticated principal, and call application services.
+- **Service:** service contracts define application use cases; implementations coordinate entities, transactions, repositories, and payment processing.
+- **Model/DAO/Repository:** entities are the domain model; Spring Data repository interfaces act as persistence DAO contracts; the JPA provider supplies implementations.
+
+Dependency direction:
+
+`React View -> REST Controller -> Service Contract -> Service Implementation -> Repository/DAO -> JPA Entity`
+
+Controllers depend on interfaces, not concrete service classes. Repositories remain persistence interfaces so service implementations do not depend on Hibernate details.
+
+### Design patterns
+
+- **Controller/Service/Repository pattern:** REST MVC separates HTTP concerns, use-case coordination, and persistence.
+- **Dependency inversion:** controllers depend on service contracts; Spring resolves the concrete implementation.
+- **Strategy:** `PaymentProcessor` implementations handle digital and cash-on-delivery payment behavior.
+- **Factory:** `PaymentProcessorFactory` selects the payment strategy for the requested payment method.
+- **Repository/DAO:** Spring Data interfaces form persistence DAO contracts and hide SQL/JPA implementation details.
+- **DTO:** request/response records keep transport models separate from entities.
+- **Constants:** `AppConstants` centralizes API and payment literals.
 
 - `OrderController`: validates and exposes customer order commands and queries.
 - `OrderService`: aggregates quantities, reserves inventory, calculates server-side totals, and creates a payment-aware order.

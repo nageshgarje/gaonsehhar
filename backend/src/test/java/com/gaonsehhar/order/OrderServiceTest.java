@@ -5,10 +5,13 @@ import static org.mockito.Mockito.*;
 import java.math.BigDecimal;
 import java.util.Optional;
 import com.gaonsehhar.product.Product;
-import com.gaonsehhar.product.ProductRepository;
+import com.gaonsehhar.service.OrderService;
 import com.gaonsehhar.user.Role;
 import com.gaonsehhar.user.User;
-import com.gaonsehhar.user.UserRepository;
+import com.gaonsehhar.repository.OrderRepository;
+import com.gaonsehhar.repository.ProductRepository;
+import com.gaonsehhar.repository.UserRepository;
+
 import org.junit.jupiter.api.Test;
 import static com.gaonsehhar.order.OrderDtos.*;
 

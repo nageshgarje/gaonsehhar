@@ -3,9 +3,13 @@ package com.gaonsehhar.security;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import java.util.Optional;
+
+import com.gaonsehhar.service.AuthService;
+import com.gaonsehhar.service.JwtService;
 import com.gaonsehhar.user.Role;
 import com.gaonsehhar.user.User;
-import com.gaonsehhar.user.UserRepository;
+import com.gaonsehhar.repository.UserRepository;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import static com.gaonsehhar.security.AuthDtos.*;

@@ -2,11 +2,12 @@ package com.gaonsehhar.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gaonsehhar.product.Product;
-import com.gaonsehhar.product.ProductRepository;
 import com.gaonsehhar.user.Role;
 import com.gaonsehhar.user.User;
-import com.gaonsehhar.user.UserRepository;
-import com.gaonsehhar.order.OrderRepository;
+import com.gaonsehhar.repository.OrderRepository;
+import com.gaonsehhar.repository.ProductRepository;
+import com.gaonsehhar.repository.UserRepository;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

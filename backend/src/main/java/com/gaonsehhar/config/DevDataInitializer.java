@@ -1,10 +1,11 @@
 package com.gaonsehhar.config;
 
 import com.gaonsehhar.product.Product;
-import com.gaonsehhar.product.ProductRepository;
 import com.gaonsehhar.user.Role;
 import com.gaonsehhar.user.User;
-import com.gaonsehhar.user.UserRepository;
+import com.gaonsehhar.repository.ProductRepository;
+import com.gaonsehhar.repository.UserRepository;
+
 import java.math.BigDecimal;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
