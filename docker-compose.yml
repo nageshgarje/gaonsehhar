@@ -12,5 +12,29 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
+  redis:
+    image: redis:7-alpine
+    ports: ["6379:6379"]
+  redpanda:
+    image: redpandadata/redpanda:v24.3.1
+    command: redpanda start --overprovisioned --smp 1 --memory 512M --reserve-memory 0M --node-id 0 --check=false
+    ports: ["9092:9092"]
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/gaonsehhar
+      DB_USERNAME: gaonsehhar
+      DB_PASSWORD: gaonsehhar
+      REDIS_HOST: redis
+      KAFKA_BOOTSTRAP_SERVERS: redpanda:9092
+      KAFKA_ENABLED: "true"
+    ports: ["8080:8080"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
 volumes:
   postgres-data:

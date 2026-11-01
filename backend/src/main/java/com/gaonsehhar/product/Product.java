@@ -13,9 +13,22 @@ public class Product {
  @Column(nullable=false) private BigDecimal price; @Column(nullable=false) private Integer stock; @Column(nullable=false) private String unit;
  @Column(name="image_url") private String imageUrl; private String village; @Column(nullable=false) private boolean active=true;
  @Column(name="created_at",nullable=false,updatable=false) private Instant createdAt=Instant.now(); @Column(name="updated_at",nullable=false) private Instant updatedAt=Instant.now();
+ @Version @Column(nullable=false) private long version;
  protected Product(){}
  public Product(User seller,String name,String description,String category,BigDecimal price,Integer stock,String unit,String imageUrl,String village){this.seller=seller;this.name=name;this.description=description;this.category=category;this.price=price;this.stock=stock;this.unit=unit;this.imageUrl=imageUrl;this.village=village;}
  public Long getId(){return id;} public User getSeller(){return seller;} public String getName(){return name;} public String getDescription(){return description;} public String getCategory(){return category;} public BigDecimal getPrice(){return price;} public Integer getStock(){return stock;} public String getUnit(){return unit;} public String getImageUrl(){return imageUrl;} public String getVillage(){return village;} public boolean isActive(){return active;}
  public void update(String name,String description,String category,BigDecimal price,Integer stock,String unit,String imageUrl,String village){this.name=name;this.description=description;this.category=category;this.price=price;this.stock=stock;this.unit=unit;this.imageUrl=imageUrl;this.village=village;this.updatedAt=Instant.now();}
+ public void patch(String name,String description,String category,BigDecimal price,Integer stock,String unit,String imageUrl,String village) {
+   if(name != null) this.name=name;
+   if(description != null) this.description=description;
+   if(category != null) this.category=category;
+   if(price != null) this.price=price;
+   if(stock != null) this.stock=stock;
+   if(unit != null) this.unit=unit;
+   if(imageUrl != null) this.imageUrl=imageUrl;
+   if(village != null) this.village=village;
+   this.updatedAt=Instant.now();
+ }
  public void decrementStock(int quantity){if(quantity>stock)throw new IllegalStateException("Insufficient stock");stock-=quantity;}
+ public void restoreStock(int quantity){stock += quantity;}
 }

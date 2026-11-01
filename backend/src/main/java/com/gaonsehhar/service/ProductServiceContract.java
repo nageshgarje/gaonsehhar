@@ -3,6 +3,7 @@ package com.gaonsehhar.service;
 import com.gaonsehhar.product.ProductDtos.CreateProductRequest;
 import com.gaonsehhar.product.ProductDtos.ProductResponse;
 import com.gaonsehhar.product.ProductDtos.UpdateProductRequest;
+import com.gaonsehhar.product.ProductDtos.PatchProductRequest;
 import com.gaonsehhar.user.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +14,7 @@ public interface ProductServiceContract {
   ProductResponse create(CreateProductRequest request, User owner);
   ProductResponse createByAdmin(CreateProductRequest request);
   ProductResponse update(Long id, UpdateProductRequest request);
+  ProductResponse patch(Long id, PatchProductRequest request);
   void deleteByAdmin(Long id);
   void delete(Long id, User seller);
 }

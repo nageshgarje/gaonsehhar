@@ -27,6 +27,10 @@ public class DevDataInitializer implements CommandLineRunner {
 
   @Override
   public void run(String... args) {
+    if(users.findByEmailIgnoreCase("admin@gaonsehhar.local").isEmpty()) {
+      users.save(new User("GaonSeGhar Admin","admin@gaonsehhar.local",
+        passwordEncoder.encode("admin123456"),"9999999999","Rampur",Role.ADMIN));
+    }
     if(products.count()>0) return;
     User seller=users.findFirstByRole(Role.SELLER).orElseGet(() -> users.save(new User("Rampur Farmer","seller@gaonsehhar.local",passwordEncoder.encode("Farmer123"),"9999999999","Rampur",Role.SELLER)));
     add(seller,"Sona Wheat","Golden village wheat","Grains",48,120,"kg","Rampur");

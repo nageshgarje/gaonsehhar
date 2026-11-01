@@ -10,5 +10,7 @@ spring:
   flyway:
     enabled: false
 app:
+  kafka:
+    enabled: false
   cors:
     origins: http://localhost:5173

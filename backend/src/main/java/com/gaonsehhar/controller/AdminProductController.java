@@ -27,6 +27,10 @@ public class AdminProductController {
   public ProductResponse update(@PathVariable Long id, @Valid @RequestBody UpdateProductRequest request) {
     return service.update(id, request);
   }
+  @PatchMapping("/{id}")
+  public ProductResponse patch(@PathVariable Long id, @Valid @RequestBody PatchProductRequest request) {
+    return service.patch(id, request);
+  }
 
   @DeleteMapping("/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)

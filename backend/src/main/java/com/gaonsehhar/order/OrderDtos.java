@@ -18,4 +18,6 @@ public class OrderDtos {
  }
  public record ItemResponse(Long productId,String productName,Integer quantity,BigDecimal unitPrice){}
  public record OrderResponse(Long id,OrderStatus status,PaymentMethod paymentMethod,PaymentStatus paymentStatus,BigDecimal total,String deliveryName,String deliveryPhone,String deliveryAddress,List<ItemResponse> items){}
+ public record DeliveryUpdateRequest(@NotBlank String deliveryName,@NotBlank String deliveryPhone,@NotBlank String deliveryAddress){}
+ public record PaymentRequest(@NotBlank String paymentReference){}
 }

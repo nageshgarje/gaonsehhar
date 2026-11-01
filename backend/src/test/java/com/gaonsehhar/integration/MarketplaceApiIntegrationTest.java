@@ -103,6 +103,27 @@ class MarketplaceApiIntegrationTest {
       .andExpect(status().isCreated()).andExpect(jsonPath("$.status").value("PLACED")).andExpect(jsonPath("$.paymentMethod").value("UPI"));
   }
 
+  @Test void customerCanTrackOrderThroughDelivery() throws Exception {
+    String customerToken=login("customer@gaonsehhar.test", "customer123456");
+    String adminToken=login("admin@gaonsehhar.test", "admin123456");
+    Long productId=products.findAll().get(0).getId();
+    String body="{\"items\":[{\"productId\":"+productId+",\"quantity\":1}],\"deliveryName\":\"Delivery Customer\",\"deliveryPhone\":\"9999999999\",\"deliveryAddress\":\"12 Village Road, Rampur\",\"paymentMethod\":\"UPI\",\"paymentReference\":\"customer@upi\"}";
+    MvcResult placed=mvc.perform(post("/api/v1/orders").header("Authorization","Bearer "+customerToken)
+      .header("Idempotency-Key","delivery-flow-1").contentType(MediaType.APPLICATION_JSON).content(body))
+      .andExpect(status().isCreated()).andExpect(jsonPath("$.status").value("PLACED"))
+      .andExpect(jsonPath("$.deliveryAddress").value("12 Village Road, Rampur")).andReturn();
+    Long orderId=mapper.readTree(placed.getResponse().getContentAsString()).get("id").asLong();
+
+    for (String status : new String[]{"CONFIRMED","SHIPPED","DELIVERED"}) {
+      mvc.perform(patch("/api/v1/orders/{id}/status",orderId).param("status",status)
+        .header("Authorization","Bearer "+adminToken)).andExpect(status().isOk())
+        .andExpect(jsonPath("$.status").value(status));
+    }
+    mvc.perform(get("/api/v1/orders").header("Authorization","Bearer "+customerToken))
+      .andExpect(status().isOk()).andExpect(jsonPath("$[0].status").value("DELIVERED"))
+      .andExpect(jsonPath("$[0].deliveryAddress").value("12 Village Road, Rampur"));
+  }
+
   private String productJson(String name, String description) throws Exception {
     return mapper.writeValueAsString(Map.of("name",name,"description",description,"category","Grains","price",new BigDecimal("100.00"),"stock",10,"unit","kg","village","Rampur"));
   }

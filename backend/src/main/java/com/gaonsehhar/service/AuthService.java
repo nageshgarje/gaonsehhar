@@ -31,8 +31,11 @@ public class AuthService implements AuthServiceContract {
   }
   @Transactional(readOnly=true)
   public AuthResponse login(LoginRequest request) {
-    User user=users.findByEmailIgnoreCase(request.email().trim().toLowerCase()).orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED,"Invalid email or password"));
-    if(!encoder.matches(request.password(),user.getPasswordHash())) throw new ApiException(HttpStatus.UNAUTHORIZED,"Invalid email or password");
+    String email=request.email().trim().toLowerCase();
+    User user=users.findByEmailIgnoreCase(email).orElseThrow(() ->
+      new ApiException(HttpStatus.NOT_FOUND,"No account found for this email. Please create an account first."));
+    if(!encoder.matches(request.password(),user.getPasswordHash()))
+      throw new ApiException(HttpStatus.UNAUTHORIZED,"Incorrect password. Please try again.");
     return token(user);
   }
   private AuthResponse token(User user) { return new AuthResponse(jwt.generateToken(user.getEmail(),user.getRole().name()), new UserResponse(user.getId(),user.getName(),user.getEmail(),user.getPhone(),user.getVillage(),user.getRole())); }

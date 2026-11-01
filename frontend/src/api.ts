@@ -1,4 +1,10 @@
 import type { AuthResponse, Order, Product } from './types'
+export class ApiError extends Error {
+  constructor(message:string, public status:number) {
+    super(message)
+    this.name='ApiError'
+  }
+}
 const API = import.meta.env.VITE_API_URL ?? 'http://localhost:8080'
 const dummyProducts: Product[] = [
  {id:101,sellerId:11,sellerName:'Mangal Patil',name:'Sona Wheat',description:'Golden, stone-ground ready wheat from rain-fed village farms.',category:'Grains',price:48,stock:120,unit:'kg',village:'Rampur',imageUrl:'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&w=800&q=80'},
@@ -32,7 +38,7 @@ async function request<T>(path:string,init:RequestInit={}):Promise<T>{
  }catch{
   throw new Error(`Cannot reach the API at ${API}. Make sure the backend is running on port 8080.`)
  }
-  if(!response.ok){const body=await response.json().catch(()=>({message:'Request failed'}));throw new Error(body.message||`Request failed (${response.status})`)}
+  if(!response.ok){const body=await response.json().catch(()=>({message:'Request failed'}));throw new ApiError(body.message||`Request failed (${response.status})`,response.status)}
   return response.status===204 ? undefined as T : response.json()
 }
 export const api=request

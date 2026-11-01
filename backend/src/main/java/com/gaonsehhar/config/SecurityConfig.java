@@ -29,7 +29,7 @@ public class SecurityConfig {
   }
   @Bean PasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder(); }
   @Bean UrlBasedCorsConfigurationSource corsConfigurationSource() {
-    CorsConfiguration c=new CorsConfiguration(); c.setAllowedOrigins(Arrays.asList(corsOrigins.split(","))); c.setAllowedMethods(Arrays.asList("GET","POST","PUT","PATCH","DELETE","OPTIONS")); c.setAllowedHeaders(Arrays.asList("Authorization","Content-Type"));
+    CorsConfiguration c=new CorsConfiguration(); c.setAllowedOrigins(Arrays.asList(corsOrigins.split(","))); c.setAllowedMethods(Arrays.asList("GET","POST","PUT","PATCH","DELETE","OPTIONS"));     c.setAllowedHeaders(Arrays.asList("Authorization","Content-Type","Idempotency-Key"));
     UrlBasedCorsConfigurationSource source=new UrlBasedCorsConfigurationSource(); source.registerCorsConfiguration("/**",c); return source;
   }
 }

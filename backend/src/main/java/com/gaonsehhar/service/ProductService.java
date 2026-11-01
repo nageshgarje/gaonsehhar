@@ -44,6 +44,12 @@ public class ProductService implements ProductServiceContract {
    return create(request, owner);
  }
  @Transactional public ProductResponse update(Long id,UpdateProductRequest r){Product p=products.findById(id).orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,"Product not found"));p.update(r.name(),r.description(),r.category(),r.price(),r.stock(),r.unit(),r.imageUrl(),r.village());return toResponse(products.save(p));}
+ @Transactional
+ public ProductResponse patch(Long id, PatchProductRequest r) {
+   Product p = products.findById(id).orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,"Product not found"));
+   p.patch(r.name(),r.description(),r.category(),r.price(),r.stock(),r.unit(),r.imageUrl(),r.village());
+   return toResponse(products.save(p));
+ }
  @Transactional public void deleteByAdmin(Long id){Product p=products.findById(id).orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,"Product not found"));products.delete(p);}
  @Transactional public void delete(Long id,User seller){Product p=products.findByIdAndSellerId(id,seller.getId()).orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,"Product not found"));products.delete(p);}
  private ProductResponse toResponse(Product p){return new ProductResponse(p.getId(),p.getSeller().getId(),p.getSeller().getName(),p.getName(),p.getDescription(),p.getCategory(),p.getPrice(),p.getStock(),p.getUnit(),p.getImageUrl(),p.getVillage());}

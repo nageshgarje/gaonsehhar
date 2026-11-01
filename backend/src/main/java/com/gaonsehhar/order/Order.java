@@ -19,9 +19,17 @@ public class Order {
  @Enumerated(EnumType.STRING) @Column(name="payment_status",nullable=false) private PaymentStatus paymentStatus=PaymentStatus.PENDING;
  @Column(nullable=false) private BigDecimal total;
  @Column(name="created_at",nullable=false,updatable=false) private Instant createdAt=Instant.now();
+ @Version @Column(nullable=false) private long version;
+ @Column(name="idempotency_key", length=100, unique=true) private String idempotencyKey;
  @OneToMany(mappedBy="order",cascade=CascadeType.ALL,orphanRemoval=true) private List<OrderItem> items=new ArrayList<>();
  protected Order(){}
  public Order(User buyer,String deliveryName,String deliveryPhone,String deliveryAddress,PaymentMethod paymentMethod){this.buyer=buyer;this.deliveryName=deliveryName;this.deliveryPhone=deliveryPhone;this.deliveryAddress=deliveryAddress;this.paymentMethod=paymentMethod;this.total=BigDecimal.ZERO;}
  public void addItem(OrderItem item){items.add(item);item.setOrder(this);}
  public void setTotal(BigDecimal total){this.total=total;} public void setPaymentStatus(PaymentStatus paymentStatus){this.paymentStatus=paymentStatus;} public Long getId(){return id;} public User getBuyer(){return buyer;} public OrderStatus getStatus(){return status;} public PaymentMethod getPaymentMethod(){return paymentMethod;} public PaymentStatus getPaymentStatus(){return paymentStatus;} public BigDecimal getTotal(){return total;} public Instant getCreatedAt(){return createdAt;} public List<OrderItem> getItems(){return items;} public String getDeliveryName(){return deliveryName;} public String getDeliveryPhone(){return deliveryPhone;} public String getDeliveryAddress(){return deliveryAddress;}
+ public String getIdempotencyKey(){return idempotencyKey;}
+ public void setIdempotencyKey(String idempotencyKey){this.idempotencyKey=idempotencyKey;}
+ public void updateStatus(OrderStatus status){this.status=status;}
+ public void updateDelivery(String deliveryName,String deliveryPhone,String deliveryAddress){
+   this.deliveryName=deliveryName; this.deliveryPhone=deliveryPhone; this.deliveryAddress=deliveryAddress;
+ }
 }

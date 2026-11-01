@@ -1,6 +1,33 @@
 import { FormEvent,useState } from 'react'
 import { login,register } from '../api'
 import type { AuthResponse } from '../types'
-export default function AuthPage({onAuth}:{onAuth:(a:AuthResponse)=>void}){const [mode,setMode]=useState<'login'|'register'>('login');const [error,setError]=useState('');const submit=async(e:FormEvent<HTMLFormElement>)=>{e.preventDefault();const data=new FormData(e.currentTarget);try{const result=mode==='login'?await login(String(data.get('email')),String(data.get('password'))):await register({name:String(data.get('name')),email:String(data.get('email')),password:String(data.get('password')),role:data.get('role')==='SELLER'?'SELLER':'CUSTOMER'});onAuth(result)}catch(err){setError((err as Error).message)}}
- return <form className="auth" onSubmit={submit}><h1>{mode==='login'?'Welcome back':'Join GaonSeGhar'}</h1>{mode==='register'&&<><input name="name" placeholder="Full name" required/><select name="role"><option value="CUSTOMER">Customer</option><option value="SELLER">Village seller</option></select></>}<input name="email" type="email" placeholder="Email" required/><input name="password" type="password" placeholder="Password" minLength={8} required/><button>{mode==='login'?'Login':'Create account'}</button>{error&&<p className="error">{error}</p>}<button type="button" className="link" onClick={()=>setMode(mode==='login'?'register':'login')}>{mode==='login'?'Create an account':'Use an existing account'}</button></form>
+export default function AuthPage({onAuth}:{onAuth:(a:AuthResponse)=>void}) {
+  const [mode,setMode]=useState<'login'|'register'>('login')
+  const [error,setError]=useState('')
+  const switchMode=(next:'login'|'register')=>{setMode(next);setError('')}
+  const submit=async(e:FormEvent<HTMLFormElement>)=>{
+    e.preventDefault()
+    setError('')
+    const data=new FormData(e.currentTarget)
+    try {
+      const result=mode==='login'
+        ? await login(String(data.get('email')),String(data.get('password')))
+        : await register({name:String(data.get('name')),email:String(data.get('email')),password:String(data.get('password')),role:data.get('role')==='SELLER'?'SELLER':'CUSTOMER'})
+      onAuth(result)
+    } catch(err) {
+      setError(err instanceof Error ? err.message : 'Unable to complete this request.')
+    }
+  }
+  return <form className="auth" onSubmit={submit}>
+    <h1>{mode==='login'?'Welcome back':'Join GaonSeGhar'}</h1>
+    {mode==='register'&&<><input name="name" placeholder="Full name" required/><select name="role"><option value="CUSTOMER">Customer</option><option value="SELLER">Village seller</option></select></>}
+    <input name="email" type="email" placeholder="Email" required/>
+    <input name="password" type="password" placeholder="Password" minLength={8} required/>
+    <button>{mode==='login'?'Login':'Create account'}</button>
+    {error&&<p className="error" role="alert">
+      {error}
+      {error.includes('No account found')&&<><br/><button type="button" className="link" onClick={()=>switchMode('register')}>Create an account now</button></>}
+    </p>}
+    <button type="button" className="link" onClick={()=>switchMode(mode==='login'?'register':'login')}>{mode==='login'?'Create an account':'Use an existing account'}</button>
+  </form>
 }
